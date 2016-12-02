@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<p>{{ page_index }}번째 페이지</p>
+<img src="{{ img_url }}" alt="page image" style="max-height:300px">
+{% if next_page %}
+    <p><input type="button" name="버튼" value="다음" onclick="location.href='{% url 'page_view' next_page.index %}'";></p>
+{% else %}
+    <p>마지막 페이지 입니다.</p>
+    <input type="button" name="버튼" value="처음으로" onclick="location.href='{% url 'page_view' 0 %}'";>
+{% endif %}
+
+</body>
+</html>

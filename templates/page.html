@@ -1,18 +1,37 @@
+{% load staticfiles %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Vook Page</title>
+    <script src="{% static "js/aframe.js" %}"></script>
 </head>
 <body>
 <p>{{ page_index }}번째 페이지</p>
-<img src="{{ img_url }}" alt="page image" style="max-height:300px">
-{% if next_page %}
-    <p><input type="button" name="버튼" value="다음" onclick="location.href='{% url 'page_view' next_page.index %}'";></p>
-{% else %}
-    <p>마지막 페이지 입니다.</p>
-    <input type="button" name="버튼" value="처음으로" onclick="location.href='{% url 'page_view' 0 %}'";>
-{% endif %}
+<a-scene>
+    <a-sky src="{{ img_url }}"></a-sky>
+
+    <a-entity camera look-controls>
+        <a-entity cursor="fuse: false"
+                  position="0 0 -1"
+                  geometry="primitive: ring; radius-inner: 0.01; radius-outer: 0.02"
+{#                  radius-inner: 0.01; radius-outer: 0.02#}
+                  material="color: red; shader: flat">
+        </a-entity>
+    </a-entity>
+
+    <a-entity cursor-listener geometry="primitive: box"
+              position="0 0 -5"
+              rotation="30 30 0"
+              width="1"
+              depth="1"
+              height="1"
+              material="color: blue"
+              href="{% url 'page_view' next_page.index %}">\
+    </a-entity>
+
+</a-scene>
 
 </body>
 </html>

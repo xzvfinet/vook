@@ -7,6 +7,7 @@ def page_view(request, page_number):
 
     return render(request, 'page.html',
                   {
+                      'page': page,
                       'page_index': page.index,
                       'img_url': page.image_file.url,
                       'next_page': page.next_page

@@ -8,13 +8,44 @@
     <script src="{% static "js/aframe.js" %}"></script>
     <script src="{% static "js/aframe-href-component.js" %}"></script>
     <script src="{% static "js/aframe-bmfont-text-component.js" %}"></script>
+    <script src="{% static "js/jquery-3.1.1.js" %}"></script>
+    <script src="{% static "js/js.cookie.js" %}"></script>
+
 </head>
 <body>
-{#<p>{{ page_index }}번째 페이지</p>#}
+
+<script>
+    AFRAME.registerComponent('cursor-listener', {
+        init: function () {
+
+            this.el.addEventListener('click', function () {
+                var countText = document.getElementById("countText");
+                var attr = countText.getAttribute("bmfont-text");
+
+                $.ajax({
+                    url: 'send_click/',
+                    type: 'post',
+                    data: {
+                        csrfmiddlewaretoken:'{{ csrf_token }}'
+                    },
+                    headers: {},
+                    dataType: 'json',
+                    success: function (data) {
+                        if (data.result) {
+                            location.href="{% url 'page_view' next_page.id %}/";
+                        }
+
+                        attr.text = data.count + "";
+                        countText.setAttribute("bmfont-text", attr);
+                    }
+                });
+            });
+        }
+    });
+</script>
+
 <a-scene>
     <a-sky src="{{ img_url }}"></a-sky>
-
-
 
     <a-entity camera look-controls>
         <a-entity cursor="fuse: false"
@@ -22,11 +53,14 @@
                   geometry="primitive: ring; radius-inner: 0.01; radius-outer: 0.02"
                   material="color: red; shader: flat">
         </a-entity>
-{#        <a-entity geometry="primitive: plane; height: 0.2; width: 0.2" position="0 1.5 -2"#}
-{#                  material="color: gray; opacity: 0.5"></a-entity>#}
-        <a-entity bmfont-text="text: {{ page.click_count }} / {{ page.limit }}; align: center; color: #FF0000"
-                  scale="1 1 1"
-                  position="-2.5 1.5 -2">
+        <a-entity id="countText"
+                bmfont-text="text:{{ page.click_count }}; align: right; color: #FF0000"
+                scale="1 1 1" position="-5.1 1.5 -2">
+
+        </a-entity>
+        <a-entity bmfont-text="text: / {{ page.limit }}; align: left; color: #FF0000"
+                      scale="1 1 1"
+                      position="0 1.5 -2">
         </a-entity>
     </a-entity>
 
@@ -39,10 +73,12 @@
               depth="1"
               height="1"
               material="color: blue"
-              href="{% url 'page_view' next_page.index %}">\
+{#              href="{% url 'page_view' next_page.index %}">#}>
     </a-entity>
 
 </a-scene>
+
+
 
 </body>
 </html>
